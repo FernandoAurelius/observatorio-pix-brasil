@@ -1,0 +1,8 @@
+# Ambiente de desenvolvimento e validacao; nucleo nao depende destas bibliotecas.
+-r requirements-producao.txt
+numpy==2.3.5
+scipy==1.17.0
+pytest==9.1.1
+pytest-cov==7.0.0
+httpx2==2.13.0
+reportlab==4.4.9

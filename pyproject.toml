@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "observatorio-pix-brasil"
+version = "1.0.0"
+description = "Laboratorio estatistico brasileiro com nucleo proprio e API oficial do BCB"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+where = ["pacotes", "aplicacoes/api"]
+
+[tool.pytest.ini_options]
+pythonpath = ["pacotes", "aplicacoes/api"]
+testpaths = ["testes"]
+python_files = ["teste_*.py"]
+python_functions = ["teste_*"]
+addopts = "-ra"
+markers = ["integracao_real: requer rede e a API oficial do BCB"]
+
+[tool.coverage.run]
+source = ["nucleo_estatistico", "observatorio_api"]
+
+[tool.coverage.report]
+show_missing = true
