@@ -1,0 +1,5 @@
+{
+  "name": "observatorio-pix-brasil", "private": true,
+  "workspaces": ["aplicacoes/web"],
+  "scripts": {"dev": "npm run dev --workspace=aplicacoes/web", "build": "npm run build --workspace=aplicacoes/web", "lint": "npm run lint --workspace=aplicacoes/web", "typecheck": "npm run typecheck --workspace=aplicacoes/web", "test:e2e": "npm run test:e2e --workspace=aplicacoes/web"}
+}

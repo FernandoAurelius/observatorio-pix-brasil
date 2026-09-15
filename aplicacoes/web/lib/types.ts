@@ -1,0 +1,27 @@
+/** Contratos JSON da API; chaves portuguesas preservadas na fronteira. */
+export type Filters = {inicio:string; fim:string; regiao:string; uf:string; municipio:string};
+export type NumericDefinition = {original:string;rotulo:string;unidade:string;tipo:string;descricao:string};
+export type Catalog = {numericas:Record<string,NumericDefinition>;categoricas:Record<string,string>;fonte:string;modo:string;periodicidade:string;aviso:string};
+export type Provenance = {competencia:string;modo:string;url:string;consultado_em:string;sha256_normalizado:string;qualidade:{recebidos:number;aceitos:number;identificadores_excluidos:number;ausentes:Record<string,number>}};
+export type Context = {modo:string;fonte:string;inicio:string;fim:string;registros:number;municipios:number;unidade_observacional:string;proveniencia:Provenance[];atende_volume_minimo:boolean;aviso:string};
+export type Envelope<T> = {contexto:Context;resultado:T};
+export type Bin = {inferior:number;superior:number;centro:number;frequencia:number;relativa:number;acumulada:number;relativa_acumulada:number;densidade:number};
+export type Curve = {valor:number;densidade:number}[];
+export type Flow = {valor:number;quantidade:number;ticket_medio:number|null;excluidos:number};
+export type Municipal = Flow & {codigo_municipio:string;municipio:string;uf:string};
+export type Panorama = {totais:Flow;meses:(Flow & {competencia:string})[];regioes:(Flow & {regiao:string})[];municipios:Municipal[];pessoas:(Flow & {pessoa:string})[];concentracao:{quantidade:number;participacao:number|null};papel:string;pessoa:string;aviso:string};
+export type Box = {q1:number;q2:number;q3:number;iqr:number;limite_inferior:number;limite_superior:number;bigode_inferior:number;bigode_superior:number;valores:number[];quantidade:number};
+export type Measures = {quantidade:number;media:number;mediana:number;modas:number[];numero_modas:number;minimo:number;maximo:number;amplitude:number;variancia:number|null;desvio_padrao:number|null;coeficiente_variacao:number|null;assimetria:number|null;q1:number;q2:number;q3:number;iqr:number;atipicos:number;amostral:boolean;avisos:string[];interpretacao:string};
+export type Category = {categoria:string;frequencia:number;relativa:number};
+export type Descriptive = {tipo:"numerica";medidas:Measures;frequencias:Bin[];caixa:Box;percentil:{percentual:number;valor:number};ausentes_excluidos:number;variavel:NumericDefinition} | {tipo:"categorica";frequencias:Category[];quantidade:number;interpretacao:string};
+export type Row = {competencia:string;codigo_municipio:string;municipio:string;uf:string;estado:string;regiao:string;[key:string]:string|number|null};
+export type Rows = {linhas:Row[];total:number;pagina:number;paginas:number};
+export type Geography = {regioes:string[];estados:string[];municipios:{codigo:string;nome:string;uf:string}[]};
+export type Dot = {valor_x:number;valor_y:number;residuo:number;previsto:number;municipio:string;uf:string;competencia:string};
+export type Model = {inclinacao:number;intercepto:number;pearson:number|null;r_quadrado:number|null;covariancia:number;minimo_x:number;maximo_x:number;quantidade:number;aviso:string};
+export type Regression = {modelo:Model;pontos:Dot[];reta:{valor_x:number;valor_y:number}[];predicao:{valor_x:number;valor_y:number;extrapolacao:boolean}|null;amostragem_visual:boolean;ausentes_excluidos:number;interpretacao:string};
+export type Distribution = {tipo:"continua"|"discreta";distribuicao:string;parametros:Record<string,number>;histograma:Bin[];curva:Curve;observados?:{valor:number;probabilidade:number}[];dispersao_media?:number;avisos:string[];ausentes_excluidos:number};
+export type LLN = {pontos:{repeticao:number;frequencia:number}[];probabilidade:number;frequencia_final:number;acertos:number;repeticoes:number;semente:number;aviso:string};
+export type CLT = {media_populacao:number;desvio_populacao:number;media_das_medias:number;desvio_das_medias:number;erro_padrao:number;histograma_original:Bin[];histograma_medias:Bin[];curva:Curve;tamanho_amostra:number;repeticoes:number;semente:number;com_reposicao:boolean;aviso:string};
+export type Finding = {titulo:string;texto:string;evidencia:unknown;grafico:string;ressalva:string};
+export type Validation = {executada:boolean;mensagem?:string;gerada_em?:string;tolerancia_relativa?:number;tolerancia_absoluta?:number;versoes?:Record<string,string>;linhas?:{funcao:string;proprio:number;referencia:number;diferenca:number;aprovada:boolean}[];sha256_nucleo?:string;referencia?:string};
