@@ -1,0 +1,52 @@
+name: Qualidade do laboratorio
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  matematica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+      - run: pip install -r requirements.txt && pip install -e . --no-deps
+      - run: python -m pytest --cov --cov-report=xml --junitxml=documentacao/evidencias/pytest-ci.xml
+      - run: python scripts/validar_nucleo.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-matematicas
+          path: |
+            coverage.xml
+            documentacao/evidencias
+  interface:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install -r requirements.txt && pip install -e . --no-deps
+      - name: Instalar dependencias JavaScript
+        run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+        working-directory: aplicacoes/web
+      - run: python scripts/validar_nucleo.py
+      - run: npm run test:e2e
+        env:
+          CI: 'true'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: interface
+          path: |
+            aplicacoes/web/playwright-report
+            aplicacoes/web/test-results
+            documentacao/capturas
