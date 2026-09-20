@@ -131,10 +131,10 @@ Os testes numéricos comparam a implementação própria com NumPy, SciPy e `sta
 ```bash
 python scripts/verificar_fonte.py --competencia 202512
 python scripts/auditar_dataset.py --inicio 202501 --fim 202512
-python scripts/gerar_relatorio.py --inicio 202501 --fim 202512
+python scripts/gerar_evidencias.py --inicio 202501 --fim 202512
 ```
 
-Os resultados consolidados ficam em [documentacao/resultados_bcb](documentacao/resultados_bcb), acompanhados das evidências da auditoria em [documentacao/evidencias](documentacao/evidencias).
+Os resultados estruturados e o resumo textual ficam em [documentacao/resultados_bcb](documentacao/resultados_bcb), acompanhados das evidências da auditoria em [documentacao/evidencias](documentacao/evidencias). Os gráficos são renderizados pelo front-end a partir dos cálculos fornecidos pela API.
 
 ## Estrutura do repositório
 

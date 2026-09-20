@@ -206,10 +206,10 @@ Para reproduzir:
 
 ```bash
 python scripts/verificar_fonte.py --competencia 202512
-python scripts/gerar_relatorio.py --inicio 202501 --fim 202512
+python scripts/gerar_evidencias.py --inicio 202501 --fim 202512
 ```
 
-O [suplemento empírico](documentacao/resultados_bcb/DESCOBERTAS.md), sua proveniência SHA-256 e três SVG foram gerados pelos mesmos serviços analíticos da aplicação. Atípicos não foram removidos e nenhum dado ausente foi convertido em zero.
+O [suplemento empírico](documentacao/resultados_bcb/DESCOBERTAS.md) e sua proveniência SHA-256 foram gerados pelos mesmos serviços analíticos da aplicação. O backend fornece cálculos e séries estruturadas; os gráficos são renderizados pelo front-end. Atípicos não foram removidos e nenhum dado ausente foi convertido em zero.
 
 ## 10. Interface e autoria
 
