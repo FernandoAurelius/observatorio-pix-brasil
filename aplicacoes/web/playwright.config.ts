@@ -1,7 +1,9 @@
 import {defineConfig,devices} from "@playwright/test";
 import path from "node:path";
 const root=path.resolve(__dirname,"../..");
-const python=path.join(root,".venv","Scripts","python.exe");
+const python=process.platform==="win32"
+ ? path.join(root,".venv","Scripts","python.exe")
+ : "python";
 export default defineConfig({
  testDir:"./e2e",timeout:60000,expect:{timeout:15000},fullyParallel:false,workers:1,
  reporter:[["list"],["html",{open:"never"}]],
