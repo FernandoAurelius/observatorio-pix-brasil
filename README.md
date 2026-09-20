@@ -107,12 +107,21 @@ No PowerShell, use `Copy-Item .env.example .env` no lugar de `cp`. O Compose pub
 ## Testes e qualidade
 
 ```bash
+ruff check .
+ruff format --check .
 python -m pytest --cov --cov-report=term-missing
 python scripts/validar_nucleo.py
 npm run lint
 npm run typecheck
 npm run build
 npm run test:e2e
+```
+
+Para aplicar automaticamente a organização de imports, as correções seguras e a formatação do
+código Python:
+
+```bash
+make formatar
 ```
 
 Os testes numéricos comparam a implementação própria com NumPy, SciPy e `statistics`, usando tolerâncias explícitas de `1e-9`. Essas bibliotecas são referências de teste e não participam dos cálculos exibidos pela aplicação.

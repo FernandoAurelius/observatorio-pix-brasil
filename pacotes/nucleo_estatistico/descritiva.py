@@ -3,9 +3,12 @@
 Somente operações elementares da biblioteca padrão são utilizadas.
 ``math.fsum`` realiza soma compensada, não uma medida estatística pronta.
 """
+
 import math as matematica
 from collections.abc import Iterable as Iteravel
+
 from .validacao import validar_numeros
+
 
 def soma(valores: Iteravel[float]) -> float:
     """Soma reais finitos com ``fsum``; a soma da sequência vazia é zero.
@@ -15,6 +18,7 @@ def soma(valores: Iteravel[float]) -> float:
     Fórmula: S = Σ x_i. Complexidade: O(n).
     """
     return matematica.fsum(validar_numeros(valores, 0))
+
 
 def media(valores: Iteravel[float]) -> float:
     """Calcula a média aritmética de observações não vazias.
@@ -27,6 +31,7 @@ def media(valores: Iteravel[float]) -> float:
     numeros = validar_numeros(valores)
     return matematica.fsum(numeros) / len(numeros)
 
+
 def percentil(valores: Iteravel[float], percentual: float) -> float:
     """Calcula um percentil por interpolação linear, tipo 7 de Hyndman-Fan.
 
@@ -38,13 +43,14 @@ def percentil(valores: Iteravel[float], percentual: float) -> float:
     """
     percentual = validar_numeros([percentual])[0]
     if not 0 <= percentual <= 100:
-        raise ValueError('O percentil deve estar entre 0 e 100.')
+        raise ValueError("O percentil deve estar entre 0 e 100.")
     ordenados = sorted(validar_numeros(valores))
     posicao = (len(ordenados) - 1) * percentual / 100
     inferior = matematica.floor(posicao)
     superior = min(inferior + 1, len(ordenados) - 1)
     fracao = posicao - inferior
     return ordenados[inferior] + fracao * (ordenados[superior] - ordenados[inferior])
+
 
 def mediana(valores: Iteravel[float]) -> float:
     """Retorna o percentil 50 (central ou média dos dois valores centrais).
@@ -53,6 +59,7 @@ def mediana(valores: Iteravel[float]) -> float:
     Erros e complexidade: iguais aos de ``percentil``.
     """
     return percentil(valores, 50)
+
 
 def moda(valores: Iteravel[float]) -> list[float]:
     """Retorna todas as modas em ordem crescente, ou [] para dados amodais.
@@ -67,7 +74,12 @@ def moda(valores: Iteravel[float]) -> list[float]:
     for numero in validar_numeros(valores):
         contagens[numero] = contagens.get(numero, 0) + 1
     maior = max(contagens.values())
-    return sorted(numero for numero, contagem in contagens.items() if contagem == maior) if maior > 1 else []
+    return (
+        sorted(numero for numero, contagem in contagens.items() if contagem == maior)
+        if maior > 1
+        else []
+    )
+
 
 def amplitude(valores: Iteravel[float]) -> float:
     """Retorna max(x)-min(x) para reais finitos não vazios, em O(n).
@@ -76,6 +88,7 @@ def amplitude(valores: Iteravel[float]) -> float:
     """
     numeros = validar_numeros(valores)
     return max(numeros) - min(numeros)
+
 
 def variancia(valores: Iteravel[float], amostral: bool = True) -> float:
     """Calcula a variância em duas passagens com soma compensada.
@@ -89,7 +102,10 @@ def variancia(valores: Iteravel[float], amostral: bool = True) -> float:
     """
     numeros = validar_numeros(valores, 2 if amostral else 1)
     centro = media(numeros)
-    return matematica.fsum((numero - centro) ** 2 for numero in numeros) / (len(numeros) - int(amostral))
+    return matematica.fsum((numero - centro) ** 2 for numero in numeros) / (
+        len(numeros) - int(amostral)
+    )
+
 
 def desvio_padrao(valores: Iteravel[float], amostral: bool = True) -> float:
     """Retorna a raiz da variância, na unidade original dos dados.
@@ -99,6 +115,7 @@ def desvio_padrao(valores: Iteravel[float], amostral: bool = True) -> float:
     """
     return matematica.sqrt(variancia(valores, amostral))
 
+
 def quartis(valores: Iteravel[float]) -> tuple[float, float, float]:
     """Retorna Q1, Q2 e Q3, percentis 25, 50 e 75 pelo método linear.
 
@@ -107,6 +124,7 @@ def quartis(valores: Iteravel[float]) -> tuple[float, float, float]:
     """
     numeros = validar_numeros(valores)
     return tuple(percentil(numeros, percentual) for percentual in (25, 50, 75))
+
 
 def coeficiente_variacao(valores: Iteravel[float], amostral: bool = True) -> float:
     """Retorna a dispersão relativa em porcentagem: 100*s/|x̄|.
@@ -119,8 +137,9 @@ def coeficiente_variacao(valores: Iteravel[float], amostral: bool = True) -> flo
     numeros = validar_numeros(valores)
     centro = media(numeros)
     if centro == 0:
-        raise ValueError('Coeficiente de variação indefinido para média zero.')
+        raise ValueError("Coeficiente de variação indefinido para média zero.")
     return 100 * desvio_padrao(numeros, amostral) / abs(centro)
+
 
 def assimetria(valores: Iteravel[float]) -> float:
     """Calcula o terceiro momento padronizado populacional g1=m3/m2^(3/2).
@@ -134,9 +153,10 @@ def assimetria(valores: Iteravel[float]) -> float:
     centro = media(numeros)
     segundo = variancia(numeros, False)
     if segundo == 0:
-        raise ValueError('Assimetria indefinida para uma variável constante.')
-    terceiro = matematica.fsum((numero-centro)**3 for numero in numeros) / len(numeros)
-    return terceiro / segundo ** 1.5
+        raise ValueError("Assimetria indefinida para uma variável constante.")
+    terceiro = matematica.fsum((numero - centro) ** 3 for numero in numeros) / len(numeros)
+    return terceiro / segundo**1.5
+
 
 def frequencias_categoricas(valores: Iteravel[str]) -> list[dict]:
     """Conta categorias em O(n+k log k) sem usar value_counts ou Counter.
@@ -150,14 +170,17 @@ def frequencias_categoricas(valores: Iteravel[str]) -> list[dict]:
     contagens: dict[str, int] = {}
     for valor in valores:
         if valor is None:
-            raise ValueError('A contagem categórica exige rótulos não nulos.')
+            raise ValueError("A contagem categórica exige rótulos não nulos.")
         categoria = str(valor)
         contagens[categoria] = contagens.get(categoria, 0) + 1
     total = sum(contagens.values())
     if total == 0:
-        raise ValueError('Não há categorias para contar.')
-    return [{'categoria': categoria, 'frequencia': frequencia, 'relativa': frequencia/total}
-            for categoria, frequencia in sorted(contagens.items(), key=lambda par: (-par[1], par[0]))]
+        raise ValueError("Não há categorias para contar.")
+    return [
+        {"categoria": categoria, "frequencia": frequencia, "relativa": frequencia / total}
+        for categoria, frequencia in sorted(contagens.items(), key=lambda par: (-par[1], par[0]))
+    ]
+
 
 def histograma(valores: Iteravel[float], classes: int = 20) -> list[dict]:
     """Constrói classes contíguas e frequências absolutas/relativas/acumuladas.
@@ -173,38 +196,47 @@ def histograma(valores: Iteravel[float], classes: int = 20) -> list[dict]:
     """
     numeros = validar_numeros(valores)
     if isinstance(classes, bool) or not isinstance(classes, int) or not 1 <= classes <= 100:
-        raise ValueError('O número de classes deve ser um inteiro entre 1 e 100.')
+        raise ValueError("O número de classes deve ser um inteiro entre 1 e 100.")
     menor, maior = min(numeros), max(numeros)
     if menor == maior:
-        folga = max(0.5, matematica.ulp(menor)*classes)
+        folga = max(0.5, matematica.ulp(menor) * classes)
         menor, maior = menor - folga, maior + folga
-    largura = (maior-menor)/classes
-    limites = [menor + indice*largura for indice in range(classes+1)]
+    largura = (maior - menor) / classes
+    limites = [menor + indice * largura for indice in range(classes + 1)]
     limites[-1] = maior
     if any(not matematica.isfinite(limite) for limite in limites) or any(
-            limites[indice+1] <= limites[indice] for indice in range(classes)):
-        raise ValueError('Reduza as classes: limites fora da precisão numérica representável.')
-    contagens = [0]*classes
+        limites[indice + 1] <= limites[indice] for indice in range(classes)
+    ):
+        raise ValueError("Reduza as classes: limites fora da precisão numérica representável.")
+    contagens = [0] * classes
     # Busca binária manual: mesmas fronteiras retornadas e comparadas nos testes.
     for numero in numeros:
         esquerda, direita = 0, classes
         while esquerda < direita:
-            meio = (esquerda+direita)//2
-            if numero < limites[meio+1]:
+            meio = (esquerda + direita) // 2
+            if numero < limites[meio + 1]:
                 direita = meio
             else:
-                esquerda = meio+1
-        contagens[min(esquerda, classes-1)] += 1
+                esquerda = meio + 1
+        contagens[min(esquerda, classes - 1)] += 1
     linhas, acumulada = [], 0
     for indice, frequencia in enumerate(contagens):
         acumulada += frequencia
-        largura_real = limites[indice+1]-limites[indice]
-        linhas.append({'inferior':limites[indice], 'superior':limites[indice+1],
-            'centro':(limites[indice]+limites[indice+1])/2, 'frequencia':frequencia,
-            'relativa':frequencia/len(numeros), 'acumulada':acumulada,
-            'relativa_acumulada':acumulada/len(numeros),
-            'densidade':frequencia/(len(numeros)*largura_real)})
+        largura_real = limites[indice + 1] - limites[indice]
+        linhas.append(
+            {
+                "inferior": limites[indice],
+                "superior": limites[indice + 1],
+                "centro": (limites[indice] + limites[indice + 1]) / 2,
+                "frequencia": frequencia,
+                "relativa": frequencia / len(numeros),
+                "acumulada": acumulada,
+                "relativa_acumulada": acumulada / len(numeros),
+                "densidade": frequencia / (len(numeros) * largura_real),
+            }
+        )
     return linhas
+
 
 def detectar_atipicos(valores: Iteravel[float]) -> dict:
     """Aplica a regra de Tukey: valores fora de [Q1-1,5*IQR,Q3+1,5*IQR].
@@ -216,15 +248,26 @@ def detectar_atipicos(valores: Iteravel[float]) -> dict:
     """
     numeros = validar_numeros(valores)
     primeiro, segundo, terceiro = quartis(numeros)
-    intervalo = terceiro-primeiro
-    inferior, superior = primeiro-1.5*intervalo, terceiro+1.5*intervalo
-    indices = [indice for indice, numero in enumerate(numeros) if numero < inferior or numero > superior]
+    intervalo = terceiro - primeiro
+    inferior, superior = primeiro - 1.5 * intervalo, terceiro + 1.5 * intervalo
+    indices = [
+        indice for indice, numero in enumerate(numeros) if numero < inferior or numero > superior
+    ]
     internos = [numero for numero in numeros if inferior <= numero <= superior]
-    return {'q1':primeiro, 'q2':segundo, 'q3':terceiro, 'iqr':intervalo,
-            'limite_inferior':inferior, 'limite_superior':superior,
-            'bigode_inferior':min(internos), 'bigode_superior':max(internos),
-            'indices':indices, 'valores':[numeros[indice] for indice in indices],
-            'quantidade':len(indices)}
+    return {
+        "q1": primeiro,
+        "q2": segundo,
+        "q3": terceiro,
+        "iqr": intervalo,
+        "limite_inferior": inferior,
+        "limite_superior": superior,
+        "bigode_inferior": min(internos),
+        "bigode_superior": max(internos),
+        "indices": indices,
+        "valores": [numeros[indice] for indice in indices],
+        "quantidade": len(indices),
+    }
+
 
 def resumo(valores: Iteravel[float], amostral: bool = False) -> dict:
     """Reúne medidas próprias e explica casos matematicamente indefinidos.
@@ -237,6 +280,7 @@ def resumo(valores: Iteravel[float], amostral: bool = False) -> dict:
     numeros = validar_numeros(valores)
     caixa = detectar_atipicos(numeros)
     avisos = []
+
     def calcular_ou_indefinido(funcao, *argumentos):
         """Converte somente indefinições matemáticas em None com aviso."""
         try:
@@ -244,22 +288,42 @@ def resumo(valores: Iteravel[float], amostral: bool = False) -> dict:
         except ValueError as erro:
             avisos.append(str(erro))
             return None
+
     modas = moda(numeros)
-    resultado = {'quantidade':len(numeros), 'media':media(numeros),
-        'mediana':mediana(numeros), 'modas':modas[:50], 'numero_modas':len(modas),
-        'minimo':min(numeros), 'maximo':max(numeros), 'amplitude':amplitude(numeros),
-        'variancia':calcular_ou_indefinido(variancia,numeros,amostral),
-        'desvio_padrao':calcular_ou_indefinido(desvio_padrao,numeros,amostral),
-        'coeficiente_variacao':calcular_ou_indefinido(coeficiente_variacao,numeros,amostral),
-        'assimetria':calcular_ou_indefinido(assimetria,numeros),
-        'q1':caixa['q1'], 'q2':caixa['q2'], 'q3':caixa['q3'], 'iqr':caixa['iqr'],
-        'atipicos':caixa['quantidade'], 'amostral':amostral, 'avisos':avisos}
-    resultado['interpretacao'] = ('Variável constante: não há dispersão.' if resultado['assimetria'] is None else
-        f"O terceiro momento padronizado é {resultado['assimetria']:.3f}. " +
-        ('O sinal positivo indica assimetria à direita.' if resultado['assimetria'] > 0 else
-         'O sinal negativo indica assimetria à esquerda.' if resultado['assimetria'] < 0 else
-         'O terceiro momento é zero; isso, isoladamente, não prova simetria.') +
-        ' Atípicos pelo IQR não são necessariamente erros; todos permanecem nos cálculos.')
+    resultado = {
+        "quantidade": len(numeros),
+        "media": media(numeros),
+        "mediana": mediana(numeros),
+        "modas": modas[:50],
+        "numero_modas": len(modas),
+        "minimo": min(numeros),
+        "maximo": max(numeros),
+        "amplitude": amplitude(numeros),
+        "variancia": calcular_ou_indefinido(variancia, numeros, amostral),
+        "desvio_padrao": calcular_ou_indefinido(desvio_padrao, numeros, amostral),
+        "coeficiente_variacao": calcular_ou_indefinido(coeficiente_variacao, numeros, amostral),
+        "assimetria": calcular_ou_indefinido(assimetria, numeros),
+        "q1": caixa["q1"],
+        "q2": caixa["q2"],
+        "q3": caixa["q3"],
+        "iqr": caixa["iqr"],
+        "atipicos": caixa["quantidade"],
+        "amostral": amostral,
+        "avisos": avisos,
+    }
+    resultado["interpretacao"] = (
+        "Variável constante: não há dispersão."
+        if resultado["assimetria"] is None
+        else f"O terceiro momento padronizado é {resultado['assimetria']:.3f}. "
+        + (
+            "O sinal positivo indica assimetria à direita."
+            if resultado["assimetria"] > 0
+            else "O sinal negativo indica assimetria à esquerda."
+            if resultado["assimetria"] < 0
+            else "O terceiro momento é zero; isso, isoladamente, não prova simetria."
+        )
+        + " Atípicos pelo IQR não são necessariamente erros; todos permanecem nos cálculos."
+    )
     return resultado
 
 

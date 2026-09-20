@@ -24,3 +24,21 @@ source = ["nucleo_estatistico", "observatorio_api"]
 
 [tool.coverage.report]
 show_missing = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"pacotes/nucleo_estatistico/__init__.py" = ["F401"]
+"scripts/*.py" = ["E402"]
+"testes/teste_nucleo.py" = ["F403", "F405"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
