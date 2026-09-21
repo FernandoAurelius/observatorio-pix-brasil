@@ -4,7 +4,7 @@ Aplicação acadêmica para exploração estatística dos dados públicos do Pix
 
 **Aplicação:** [observatorio-pix.floresdev.com.br](https://observatorio-pix.floresdev.com.br)
 
-**Apresentação:** [youtu.be/7N729YBBeXM](https://youtu.be/7N729YBBeXM)
+**Apresentação:** [youtu.be/VeD9sZRknd8](https://youtu.be/VeD9sZRknd8)
 
 ## Autoria
 
