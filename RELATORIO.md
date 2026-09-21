@@ -30,7 +30,7 @@ A escolha permite trabalhar com valores monetários, contagens, heterogeneidade 
 | `AnoMes` | Temporal | Competência |
 | `Municipio_Ibge`, `Estado_Ibge` | Identificadores | Chaves, agrupamentos, UF; nunca medidas |
 
-O recorte de 01/2025 a 12/2025 foi auditado por `scripts/auditar_dataset.py` e atende ao mínimo de **1.000 registros reais**, quatro numéricas e duas categóricas. A evidência está em `documentacao/evidencias/auditoria_dataset_2025.json`.
+O recorte de 01/2025 a 12/2025 foi auditado e atende ao mínimo de **1.000 registros reais**, quatro variáveis numéricas e duas categóricas. Os resultados consolidados da auditoria são apresentados a seguir.
 
 | Métrica | Resultado |
 |---|---:|
@@ -184,9 +184,9 @@ $$|a-b|\le\mathrm{atol}+\mathrm{rtol}|b|,\qquad\mathrm{atol}=\mathrm{rtol}=10^{-
 
 A suíte documenta suas asserções no código. Diferentes critérios estatísticos, como proximidade estocástica de uma frequência em Monte Carlo, **não** são confundidos com a tolerância de igualdade numérica.
 
-`scripts/validar_nucleo.py` registra **26 comparações realmente executadas**, versões das bibliotecas, data e SHA-256 do código. [Consulte a evidência](documentacao/evidencias/validacao.json). A suíte completa inclui paginação, limites, filtros, CSV completo, falhas externas, API e prevenção de dupla contagem.
+Foram executadas **26 comparações numéricas** entre o núcleo próprio e as bibliotecas de referência. A suíte completa inclui paginação, limites, filtros, CSV completo, falhas externas, API e prevenção de dupla contagem.
 
-A suíte final registrou 219 testes aprovados, 95% de cobertura geral e no mínimo 90% em cada módulo do núcleo. Lint, TypeScript, build e 13 jornadas Playwright também foram executados; os testes de navegador usaram o BCB real por padrão.
+A suíte final registrou 219 testes aprovados, 95% de cobertura geral e no mínimo 90% em cada módulo do núcleo. Lint, TypeScript, build e 14 jornadas Playwright também foram executados; os testes de navegador usaram o BCB real por padrão.
 
 ## 9. Três descobertas — M6
 
@@ -202,18 +202,11 @@ Resultados calculados antes da interpretação, exclusivamente sobre as 66.837 o
 2. **Centro da quantidade paga por PF.** Pergunta: quão distante está a média da mediana entre observações município-mês? Média **927.128,34**, mediana **202.135**, razão **4,5867**, com 66.837 observações e zero ausências. A visualização é o histograma/boxplot da Descritiva. Limitação: a distância entre média e mediana, isoladamente, não prova uma distribuição; o terceiro momento padronizado observado foi 32,1296.
 3. **Quantidade versus valor pago por PF.** Pergunta: qual a associação linear no recorte? Pearson **r = 0,975617**, **R² = 0,951829**, inclinação **216,609975** e n=66.837. A visualização é a dispersão com reta de mínimos quadrados. Limitação: porte municipal afeta as duas variáveis; **correlação não implica causalidade** e o ajuste não garante predição fora do domínio.
 
-Para reproduzir:
-
-```bash
-python scripts/verificar_fonte.py --competencia 202512
-python scripts/gerar_evidencias.py --inicio 202501 --fim 202512
-```
-
-O [suplemento empírico](documentacao/resultados_bcb/DESCOBERTAS.md) e sua proveniência SHA-256 foram gerados pelos mesmos serviços analíticos da aplicação. O backend fornece cálculos e séries estruturadas; os gráficos são renderizados pelo front-end. Atípicos não foram removidos e nenhum dado ausente foi convertido em zero.
+As descobertas foram calculadas pelos mesmos serviços analíticos utilizados pela aplicação. O backend fornece cálculos e séries estruturadas; os gráficos são renderizados pelo frontend. Atípicos não foram removidos e nenhum dado ausente foi convertido em zero.
 
 ## 10. Interface e autoria
 
-A tabela de rotas no README relaciona os módulos da aplicação. A pasta `documentacao/capturas/` contém imagens da interface conectada ao BCB.
+A tabela de rotas no README relaciona os módulos disponíveis na aplicação publicada.
 
 O projeto foi desenvolvido individualmente por Miguel Fernando Flores Barreto, RA 72650465. O código, os testes e os resultados apresentados correspondem ao estado final analisado neste relatório.
 

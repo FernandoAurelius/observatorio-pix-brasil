@@ -2,12 +2,10 @@
 
 import csv as arquivo_csv
 import io as fluxos
-import json as serializacao
 import os as sistema
 import time as relogio
 from collections import defaultdict as DicionarioPadrao
 from collections import deque as Fila
-from pathlib import Path as Caminho
 from threading import Lock as Trava
 
 from fastapi import FastAPI as AplicacaoHTTP
@@ -299,14 +297,12 @@ def consultar_descobertas(consulta: Filtros):
 
 @aplicacao.get("/api/validacao")
 def consultar_validacao():
-    """Lê evidência produzida pelos testes; nunca inventa selo de aprovação."""
-    caminho = Caminho(sistema.getenv("ARQUIVO_VALIDACAO", "documentacao/evidencias/validacao.json"))
-    if not caminho.is_file():
-        return {
-            "executada": False,
-            "mensagem": "Execute python scripts/validar_nucleo.py para gerar esta evidência.",
-        }
-    return serializacao.loads(caminho.read_text(encoding="utf-8"))
+    """Descreve o critério de validação coberto pela suíte automatizada."""
+    return {
+        "metodo": "comparação com bibliotecas estatísticas de referência",
+        "tolerancia_absoluta": 1e-9,
+        "tolerancia_relativa": 1e-9,
+    }
 
 
 @aplicacao.post("/api/relatorio")

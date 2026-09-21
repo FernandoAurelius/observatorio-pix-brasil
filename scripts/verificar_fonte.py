@@ -33,10 +33,5 @@ if __name__ == "__main__":
         and sum(valor >= 2 for valor in categorias.values()) >= 2,
         "aviso": "Volume e esquema verificados. Os campos VL_* são reais (R$) conforme o Swagger oficial; a cobertura descrita pelo catálogo é SPI.",
     }
-    destino = RAIZ / "documentacao/evidencias/fonte_bcb.json"
-    destino.parent.mkdir(exist_ok=True, parents=True)
-    destino.write_text(
-        serializacao.dumps(relatorio, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
     print(serializacao.dumps(relatorio, ensure_ascii=False, indent=2))
     sistema.exit(0 if relatorio["apto_volume_esquema"] else 1)

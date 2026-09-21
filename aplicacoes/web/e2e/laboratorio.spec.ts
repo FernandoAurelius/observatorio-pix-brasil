@@ -1,7 +1,7 @@
 import {test,expect} from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
-const captures=path.resolve(__dirname,"../../../documentacao/capturas");
+const captures=path.resolve(__dirname,"../../../test-results/capturas");
 const screens:[[string,string],...[string,string][]]=[["/","Visão Geral"],["/explorar","Explorar Dados"],["/descritiva","Estatística Descritiva"],["/distribuicoes","Distribuições Teóricas"],["/regressao","Correlação e Regressão Linear"],["/descobertas","Descobertas Estatísticas"],["/metodologia","Metodologia"],["/sobre","Sobre os Dados"]];
 test.beforeAll(()=>fs.mkdirSync(captures,{recursive:true}));
 test("Tipografia segue o design visual do projeto",async({page})=>{

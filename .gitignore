@@ -14,7 +14,5 @@ test-results/
 .env.local
 entregas/
 .ferramentas-locais/
-documentacao/evidencias/pytest*.xml
-documentacao/evidencias/coverage*.xml
 work-*
 .DS_Store

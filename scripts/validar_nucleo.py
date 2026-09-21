@@ -1,4 +1,4 @@
-"""Gera evidência numérica real para a página Metodologia; execute da raiz."""
+"""Compara o núcleo próprio com bibliotecas estatísticas de referência."""
 
 import sys as sistema
 from pathlib import Path as Caminho
@@ -6,7 +6,6 @@ from pathlib import Path as Caminho
 RAIZ = Caminho(__file__).resolve().parents[1]
 sistema.path.insert(0, str(RAIZ / "pacotes"))
 import hashlib as resumos_digitais
-import json as serializacao
 from datetime import UTC
 from datetime import datetime as DataHora
 
@@ -157,12 +156,7 @@ def gerar_validacao() -> dict:
 
 if __name__ == "__main__":
     resultado = gerar_validacao()
-    destino = RAIZ / "documentacao/evidencias/validacao.json"
-    destino.parent.mkdir(parents=True, exist_ok=True)
-    destino.write_text(
-        serializacao.dumps(resultado, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
     print(
-        f"{sum(linha['aprovada'] for linha in resultado['linhas'])}/{len(resultado['linhas'])} comparações aprovadas; {destino}"
+        f"{sum(linha['aprovada'] for linha in resultado['linhas'])}/{len(resultado['linhas'])} comparações aprovadas"
     )
     sistema.exit(0 if all(linha["aprovada"] for linha in resultado["linhas"]) else 1)

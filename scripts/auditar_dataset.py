@@ -7,7 +7,6 @@ RAIZ = Caminho(__file__).resolve().parents[1]
 sistema.path[:0] = [str(RAIZ / "pacotes"), str(RAIZ / "aplicacoes/api")]
 
 import argparse as argumentos
-import json as serializacao
 from datetime import UTC
 from datetime import datetime as DataHora
 
@@ -124,10 +123,5 @@ if __name__ == "__main__":
     analisador.add_argument("--fim", default="202512")
     opcoes = analisador.parse_args()
     resultado = auditar(opcoes.inicio, opcoes.fim)
-    destino = RAIZ / "documentacao/evidencias/auditoria_dataset_2025.json"
-    destino.write_text(
-        serializacao.dumps(resultado, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
     imprimir_tabela(resultado)
-    print(f"\nEvidência: {destino}")
     sistema.exit(0 if resultado["atende_requisitos"] else 1)

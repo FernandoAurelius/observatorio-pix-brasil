@@ -1,20 +1,22 @@
 # Observatório Pix Brasil
 
-Laboratório estatístico interativo desenvolvido para a disciplina de **Matemática e Estatística para Computação**. O projeto reúne dados públicos do Pix por município, cálculos estatísticos implementados em Python e uma interface web para exploração dos resultados.
+Aplicação acadêmica para exploração estatística dos dados públicos do Pix por município. O projeto reúne uma interface web, uma API de consulta e um núcleo matemático próprio para apresentar conceitos de estatística descritiva, probabilidade, distribuições e regressão sobre um conjunto real de abrangência nacional.
+
+**Aplicação:** [observatorio-pix.floresdev.com.br](https://observatorio-pix.floresdev.com.br)
+
+**Apresentação:** [youtu.be/7N729YBBeXM](https://youtu.be/7N729YBBeXM)
 
 ## Autoria
 
-**Miguel Fernando Flores Barreto**
+Trabalho individual desenvolvido por **Miguel Fernando Flores Barreto**, RA **72650465**.
 
-**RA:** 72650465
-
-**GitHub:** [@FernandoAurelius](https://github.com/FernandoAurelius)
+GitHub: [@FernandoAurelius](https://github.com/FernandoAurelius)
 
 ## Fonte e recorte
 
-Os dados são publicados pelo **Banco Central do Brasil** no conjunto [Estatísticas do Pix](https://dadosabertos.bcb.gov.br/dataset/pix), recurso [Transações Pix por Município](https://dadosabertos.bcb.gov.br/dataset/pix/resource/268e3bf6-b096-4006-83cd-813697012ece).
+Os dados pertencem ao conjunto [Estatísticas do Pix](https://dadosabertos.bcb.gov.br/dataset/pix), publicado pelo Banco Central do Brasil. O recurso analisado é [Transações Pix por Município](https://dadosabertos.bcb.gov.br/dataset/pix/resource/268e3bf6-b096-4006-83cd-813697012ece).
 
-O estudo utiliza o período de janeiro a dezembro de 2025 e considera cada combinação de município e mês como uma observação. O conjunto analisado contém:
+O estudo considera o período de janeiro a dezembro de 2025. Cada observação representa uma combinação entre município e competência mensal.
 
 | Característica | Resultado |
 |---|---:|
@@ -22,33 +24,29 @@ O estudo utiliza o período de janeiro a dezembro de 2025 e considera cada combi
 | Códigos municipais | 5.571 |
 | Unidades federativas | 27 |
 | Regiões | 5 |
-| Competências | 12 |
+| Competências mensais | 12 |
 | Variáveis numéricas | 12 |
 | Variáveis categóricas | 4 |
 
-Os campos monetários representam volume financeiro em reais (R$), conforme a documentação oficial. Pagadores e recebedores são perspectivas diferentes do fluxo e não devem ser somados. As contagens mensais de pessoas também não representam usuários únicos no ano.
-
-Mais detalhes estão no [contrato dos dados](documentacao/CONTRATO_DADOS.md) e no [relatório metodológico](RELATORIO.md).
+Os campos monetários representam volume financeiro em reais. Pagadores e recebedores são perspectivas distintas do fluxo e não são somados. As contagens mensais de pessoas não representam usuários únicos no ano. Registros sem identificação municipal válida foram desconsiderados, enquanto valores atípicos permaneceram nas análises.
 
 ## Funcionalidades
 
 | Rota | Conteúdo |
 |---|---|
-| `/` | Panorama, evolução, regiões, PF/PJ e destaques municipais |
-| `/explorar` | Tabela pesquisável, ordenação, paginação e exportação CSV |
-| `/descritiva` | Média, mediana, moda, dispersão, quartis, frequências, histograma e boxplot |
+| `/` | Panorama geral, evolução mensal, regiões e destaques municipais |
+| `/explorar` | Consulta, ordenação, paginação e exportação dos registros |
+| `/descritiva` | Medidas de centro, dispersão, quartis, frequências, histograma e boxplot |
 | `/simulacao` | Lei dos Grandes Números e Teorema Central do Limite |
-| `/distribuicoes` | Normal, Exponencial, Uniforme e Poisson |
+| `/distribuicoes` | Distribuições Normal, Exponencial, Uniforme e Poisson |
 | `/regressao` | Correlação de Pearson, regressão linear, R² e predição |
-| `/descobertas` | Três leituras estatísticas do recorte selecionado |
+| `/descobertas` | Interpretações calculadas para o recorte selecionado |
 | `/metodologia` | Fórmulas, convenções e limites das análises |
 | `/sobre` | Origem, abrangência e interpretação dos dados |
 
-![Visão geral do observatório](documentacao/capturas/bcb_inicio.png)
-
-![Interface em dispositivo móvel](documentacao/capturas/bcb_mobile.png)
-
 ## Arquitetura
+
+O frontend em Next.js apresenta tabelas e gráficos a partir de resultados estruturados fornecidos pela API FastAPI. A API consulta a fonte oficial, normaliza os registros, aplica os filtros e encaminha os dados ao núcleo estatístico em Python. Não há banco de dados local nem uma segunda implementação dos cálculos no navegador.
 
 ```text
 Navegador
@@ -59,96 +57,35 @@ Next.js ──► FastAPI ──► Banco Central do Brasil
                   └──► Núcleo estatístico em Python
 ```
 
-- **Frontend:** Next.js, React, TypeScript, Tailwind CSS, componentes baseados em shadcn/ui, Lineicons e Recharts.
-- **Backend:** FastAPI com aquisição, normalização, filtros e exportações.
-- **Núcleo estatístico:** implementação própria das medidas, simulações, distribuições e regressão.
-- **Dados:** fonte pública oficial do Banco Central do Brasil, sem banco de dados local.
+O núcleo implementa diretamente média, mediana, moda, amplitude, variâncias, desvios padrão, percentis, quartis, coeficiente de variação, frequências, assimetria, covariância, correlação, regressão e distribuições de probabilidade. NumPy, SciPy e `statistics` são utilizados apenas como referências independentes na suíte de testes.
 
-## Execução local
+## Resultados principais
 
-Pré-requisitos: Python 3.13, Node.js 22 e npm.
+No recorte completo de 2025:
 
-```bash
-python -m venv .venv
-python -m pip install -r requirements.txt
-python -m pip install -e . --no-deps
-npm ci
-```
+1. Os 50 municípios com maior movimentação concentraram **54,16%** do valor pago por pessoas físicas e jurídicas.
+2. A quantidade paga por pessoa física apresentou média de **927.128,34** transações e mediana de **202.135**, razão de **4,5867** entre as duas medidas.
+3. Quantidade e valor pagos por pessoa física apresentaram correlação de Pearson de **0,975617** e R² de **0,951829**, com inclinação estimada de **216,609975**.
 
-No Windows PowerShell, ative o ambiente com:
+Esses resultados descrevem observações município-mês. Eles não demonstram causalidade, não representam indivíduos e não garantem predições fora do domínio observado.
 
-```powershell
-.venv\Scripts\Activate.ps1
-```
+## Qualidade
 
-Inicie a API:
+A validação compara as implementações matemáticas com NumPy, SciPy e `statistics` sob tolerância absoluta e relativa de `1e-9`. A suíte final registrou **219 testes Python aprovados**, **95% de cobertura total** e **14 jornadas de interface**. O projeto também passa por análise estática, verificação TypeScript e compilação de produção.
 
-```bash
-uvicorn observatorio_api.principal:aplicacao --reload --host 127.0.0.1 --port 8000
-```
+## Estrutura
 
-Em outro terminal, inicie a interface:
+| Caminho | Responsabilidade |
+|---|---|
+| `aplicacoes/api/` | API FastAPI e integração com o Banco Central |
+| `aplicacoes/web/` | Interface Next.js e testes de navegador |
+| `pacotes/nucleo_estatistico/` | Implementações matemáticas |
+| `scripts/` | Auditorias e verificações auxiliares |
+| `testes/` | Testes unitários e de integração |
+| `RELATORIO.md` | Fundamentação metodológica e análise dos resultados |
 
-```bash
-npm run dev
-```
+## Licenças e referências
 
-A aplicação estará em `http://localhost:3000` e a documentação da API em `http://localhost:8000/api/documentacao`.
+O código é distribuído sob a licença MIT. Os dados pertencem ao Banco Central do Brasil e seguem a licença indicada no catálogo oficial.
 
-### Docker
-
-```bash
-cp .env.example .env
-docker compose up --build
-```
-
-No PowerShell, use `Copy-Item .env.example .env` no lugar de `cp`. O Compose publica a interface em `http://127.0.0.1:3000` e a API em `http://127.0.0.1:8000`.
-
-## Testes e qualidade
-
-```bash
-ruff check .
-ruff format --check .
-python -m pytest --cov --cov-report=term-missing
-python scripts/validar_nucleo.py
-npm run lint
-npm run typecheck
-npm run build
-npm run test:e2e
-```
-
-Para aplicar automaticamente a organização de imports, as correções seguras e a formatação do
-código Python:
-
-```bash
-make formatar
-```
-
-Os testes numéricos comparam a implementação própria com NumPy, SciPy e `statistics`, usando tolerâncias explícitas de `1e-9`. Essas bibliotecas são referências de teste e não participam dos cálculos exibidos pela aplicação.
-
-## Reprodução da análise de 2025
-
-```bash
-python scripts/verificar_fonte.py --competencia 202512
-python scripts/auditar_dataset.py --inicio 202501 --fim 202512
-python scripts/gerar_evidencias.py --inicio 202501 --fim 202512
-```
-
-Os resultados estruturados e o resumo textual ficam em [documentacao/resultados_bcb](documentacao/resultados_bcb), acompanhados das evidências da auditoria em [documentacao/evidencias](documentacao/evidencias). Os gráficos são renderizados pelo front-end a partir dos cálculos fornecidos pela API.
-
-## Estrutura do repositório
-
-```text
-aplicacoes/api/                 FastAPI e integração com o BCB
-aplicacoes/web/                 Next.js e testes de navegador
-pacotes/nucleo_estatistico/     Implementações matemáticas
-testes/                         Testes unitários e de integração
-scripts/                        Reprodução e validação das análises
-documentacao/                   Contrato, evidências, capturas e resultados
-RELATORIO.md                    Discussão metodológica e conclusões
-compose.yaml                    Execução em contêineres
-```
-
-## Licenças
-
-O código é distribuído sob a licença MIT. Os dados pertencem ao Banco Central do Brasil e seguem a licença indicada no catálogo oficial. Dependências e atribuições adicionais estão registradas em [documentacao/TERCEIROS.md](documentacao/TERCEIROS.md).
+As principais referências técnicas são Python, FastAPI, Next.js, React, Recharts, NumPy e SciPy. As dependências completas e suas versões estão registradas nos arquivos de configuração do projeto.
